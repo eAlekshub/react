@@ -1,0 +1,35 @@
+.courseInfo{
+ padding: 20px 30px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 20px rgb(0 0 0 / 15%);
+}
+
+.courseInfo h2 {
+ text-align: center;
+ margin-top: 20px;
+ margin-bottom: 40px;
+ font-size: 28px;
+ font-weight: 500;
+}
+
+.courseInfo button{
+  border: none;
+  font-size: 15px;
+}
+
+.description{
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ justify-content: space-evenly;
+ width: 100%;
+}
+
+.descriptionText{
+ width: 60%;
+ margin-right: 15px;
+}
+
+.courseId p {
+  margin-bottom: 10px;
+}
