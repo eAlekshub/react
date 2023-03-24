@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import { LOGIN_SUCCESS } from '../../store/user/actionTypes';
+
 import './login.css';
 
 import Input from '../../common/Input/Input';
@@ -15,7 +18,15 @@ const Login = () => {
 	const { BUTTON_LOGIN } = BUTTON;
 	const [user, setUser] = useState({});
 
-	async function loginUser(user) {
+	const dispatch = useDispatch();
+
+	const loginUserSuccess = (name, email, token) =>
+		dispatch({
+			type: LOGIN_SUCCESS,
+			payload: { name, email, token },
+		});
+
+	const loginUser = async (user) => {
 		const response = await fetch('http://localhost:4000/login', {
 			method: 'POST',
 			headers: {
@@ -24,17 +35,21 @@ const Login = () => {
 			body: JSON.stringify(user),
 		});
 
-		const result = await response.json();
+		const data = await response.json();
+		const dataString = JSON.stringify(data.result);
 
 		if (response.ok) {
-			console.log('Success:', result);
-			localStorage.setItem('result', JSON.stringify(result));
+			console.log('Success:', data);
+			localStorage.setItem('token', dataString);
+
+			const { name, email } = data.user;
+			loginUserSuccess(name, email, dataString);
 			navigate('/courses');
 		} else {
 			alert('Authorisation error');
-			console.error('Error:', result);
+			console.error('Error:', data);
 		}
-	}
+	};
 
 	const handleInputChange = (newValue) => {
 		setUser({ ...user, ...newValue });

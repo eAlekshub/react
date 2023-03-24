@@ -1,0 +1,4 @@
+const ADD_AUTHOR = 'ADD_AUTHOR';
+const GET_AUTHORS = 'GET_AUTHORS';
+
+export { ADD_AUTHOR, GET_AUTHORS };

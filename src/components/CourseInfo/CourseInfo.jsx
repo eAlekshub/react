@@ -1,24 +1,29 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { useSelector } from 'react-redux';
+
 import './courseInfo.css';
-import { mockedCoursesList, mockedAuthorsList, BUTTON } from '../../constants';
+import { BUTTON } from '../../constants';
 
 import Button from '../../common/Button/Button';
 
 const CourseInfo = () => {
+	const { BUTTON_BACK } = BUTTON;
+
 	const { courseId } = useParams();
 	const navigate = useNavigate();
 
-	const { BUTTON_BACK } = BUTTON;
+	const allCourses = useSelector((state) => state.courses);
+	const allAuthors = useSelector((state) => state.authors);
 
 	const goBack = () => {
 		navigate(-1);
 	};
 
-	const course = mockedCoursesList.find((course) => course.id === courseId);
+	const course = allCourses.find((course) => course.id === courseId);
 
-	const courseAuthors = mockedAuthorsList
+	const courseAuthors = allAuthors
 		.filter((author) => course.authors.includes(author.id))
 		.map((author) => author.name)
 		.join(', ');

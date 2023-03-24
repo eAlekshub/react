@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './courses.css';
 
@@ -9,6 +10,10 @@ import {
 	BUTTON,
 	PLACEHOLDER,
 } from '../../constants';
+import { GET_COURSES } from '../../store/courses/actionTypes';
+import { GET_AUTHORS } from '../../store/authors/actionTypes';
+
+import { getData } from '../../servisces';
 
 import SearchBar from './components/SearchBar/SearchBar';
 import Button from '../../common/Button/Button';
@@ -19,11 +24,35 @@ const Courses = () => {
 	const { PLACEHOLDER_SEARCH } = PLACEHOLDER;
 
 	const [searchValue, setSearchValue] = useState('');
-	const [filteredCourses, setFilteredCourses] = useState(mockedCoursesList);
+	const [filteredCourses, setFilteredCourses] = useState([]);
+
+	const allCourses = useSelector((state) => state.courses);
+	const allAuthors = useSelector((state) => state.authors);
+	const dispatch = useDispatch();
+
+	const getAllCourses = useCallback(
+		(course) => {
+			dispatch({
+				type: GET_COURSES,
+				payload: course,
+			});
+		},
+		[dispatch]
+	);
+
+	const getAllAuthors = useCallback(
+		(authors) => {
+			dispatch({
+				type: GET_AUTHORS,
+				payload: authors,
+			});
+		},
+		[dispatch]
+	);
 
 	const handleSearch = () => {
 		const searchValueLowerCase = searchValue.toLowerCase();
-		const filtered = mockedCoursesList.filter((course) => {
+		const filtered = allCourses.filter((course) => {
 			const idString = course.id.toString().toLowerCase();
 			const titleString = course.title.toLowerCase();
 
@@ -36,10 +65,26 @@ const Courses = () => {
 	};
 
 	useEffect(() => {
+		getData('http://localhost:4000/courses/all')
+			.then((data) => {
+				getAllCourses(data.result);
+			})
+			.catch((error) => {
+				throw new Error(error);
+			});
+
+		getData('http://localhost:4000/authors/all')
+			.then((data) => {
+				getAllAuthors(data.result);
+			})
+			.catch((error) => {
+				throw new Error(error);
+			});
+
 		if (searchValue === '') {
-			setFilteredCourses(mockedCoursesList);
+			setFilteredCourses(allCourses);
 		}
-	}, [searchValue]);
+	}, [allCourses, getAllAuthors, getAllCourses, searchValue]);
 
 	return (
 		<section className='coursesList'>
@@ -58,7 +103,7 @@ const Courses = () => {
 			</div>
 
 			{filteredCourses.map((course) => {
-				const courseAuthors = mockedAuthorsList
+				const courseAuthors = allAuthors
 					.filter((author) => course.authors.includes(author.id))
 					.map((author) => author.name)
 					.join(', ');
