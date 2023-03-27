@@ -1,20 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { LOGOUT } from '../../store/user/actionTypes';
 
 import './header.css';
+
+import { logout } from '../../store/user/actionCreators';
+import { getUser } from '../../store/selectors';
 
 import Logo from './components/Logo/Logo';
 import Button from '../../common/Button/Button';
 
 const Header = () => {
 	const dispatch = useDispatch();
-	const user = useSelector((state) => state.user);
+	const user = useSelector(getUser);
 
-	const logout = () => {
-		dispatch({ type: LOGOUT, payload: user });
+	const handleLogout = () => {
 		localStorage.removeItem('token');
+		dispatch(logout(user));
 	};
 
 	return (
@@ -24,7 +26,7 @@ const Header = () => {
 				<div className='userBox'>
 					<p className='userName'>{user.name}</p>
 					<Link to={'/login'}>
-						<Button buttonText='Logout' onClick={logout} />
+						<Button buttonText='Logout' onClick={handleLogout} />
 					</Link>
 				</div>
 			) : (

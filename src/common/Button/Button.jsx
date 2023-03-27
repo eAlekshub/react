@@ -2,9 +2,10 @@ import React from 'react';
 import './button.css';
 
 const Button = (props) => {
-	const { type, buttonText, onClick } = props;
+	const { className, type, buttonText, onClick, srcImage, altText } = props;
 	return (
-		<button type={type} onClick={onClick}>
+		<button className={className} type={type} onClick={onClick}>
+			{srcImage ? <img src={srcImage} alt={altText} /> : null}
 			{buttonText}
 		</button>
 	);

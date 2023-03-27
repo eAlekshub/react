@@ -1,9 +1,10 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-
 import { useSelector } from 'react-redux';
 
 import './courseInfo.css';
+
+import { getAllCourses, getAllAuthors } from '../../store/selectors';
 import { BUTTON } from '../../constants';
 
 import Button from '../../common/Button/Button';
@@ -14,8 +15,8 @@ const CourseInfo = () => {
 	const { courseId } = useParams();
 	const navigate = useNavigate();
 
-	const allCourses = useSelector((state) => state.courses);
-	const allAuthors = useSelector((state) => state.authors);
+	const allCourses = useSelector(getAllCourses);
+	const allAuthors = useSelector(getAllAuthors);
 
 	const goBack = () => {
 		navigate(-1);

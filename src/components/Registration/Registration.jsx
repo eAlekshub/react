@@ -6,34 +6,14 @@ import './registration.css';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 
-import { BUTTON } from '../../constants';
+import { BUTTON, registrationForm } from '../../constants';
 
-import { registrationForm } from '../../constants';
+import { postData } from '../../servisces';
 
 const Registration = () => {
 	const navigate = useNavigate();
 	const { BUTTON_REGISTRATION } = BUTTON;
 	const [newUser, setNewUser] = useState({});
-
-	async function registerUser(user) {
-		const response = await fetch('http://localhost:4000/register', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(user),
-		});
-
-		const result = await response.json();
-
-		if (response.ok) {
-			console.log('Success:', result);
-			navigate('/login');
-		} else {
-			alert('Registration error');
-			console.error('Error:', result);
-		}
-	}
 
 	const handleInputChange = (newValue) => {
 		setNewUser({ ...newUser, ...newValue });
@@ -41,7 +21,15 @@ const Registration = () => {
 
 	const handlRegistration = (e) => {
 		e.preventDefault();
-		registerUser(newUser);
+		postData(newUser, 'http://localhost:4000/register')
+			.then((data) => {
+				console.log('Success:', data);
+				navigate('/login');
+			})
+			.catch((error) => {
+				alert('Registration error');
+				throw new Error(error);
+			});
 	};
 
 	return (

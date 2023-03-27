@@ -9,7 +9,7 @@
 }
 
 .courseTitle{
-width: 70%;
+width: 71%;
 }
 
 .courseTitle h2{
@@ -19,7 +19,7 @@ width: 70%;
 .courseDescription{
  display: flex;
  flex-direction: column;
-width: 28%;
+width: 25%;
  
 }
 
@@ -27,8 +27,27 @@ width: 28%;
  margin-bottom: 10px;
 }
 
+
 .courseCard button {
  align-self: center;
+}
+
+.controlPanel{
+ display: flex;
+ justify-content: center;
+gap: 5px
+}
+
+.controlBtn {
+ padding: 0;
+ width: 30px;
+ height: 29.2px;
+ text-align: center;
+}
+
+.courseCard button img {
+ width: 15px;
+ vertical-align: middle;
 }
 
 .author{

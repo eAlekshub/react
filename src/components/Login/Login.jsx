@@ -2,54 +2,21 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
-import { LOGIN_SUCCESS } from '../../store/user/actionTypes';
+import { loginUserSuccess } from '../../store/user/actionCreators';
 
 import './login.css';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 
-import { BUTTON } from '../../constants';
-
-import { loginForm } from '../../constants';
+import { BUTTON, loginForm } from '../../constants';
+import { postData } from '../../servisces';
 
 const Login = () => {
-	const navigate = useNavigate();
 	const { BUTTON_LOGIN } = BUTTON;
 	const [user, setUser] = useState({});
-
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
-
-	const loginUserSuccess = (name, email, token) =>
-		dispatch({
-			type: LOGIN_SUCCESS,
-			payload: { name, email, token },
-		});
-
-	const loginUser = async (user) => {
-		const response = await fetch('http://localhost:4000/login', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(user),
-		});
-
-		const data = await response.json();
-		const dataString = JSON.stringify(data.result);
-
-		if (response.ok) {
-			console.log('Success:', data);
-			localStorage.setItem('token', dataString);
-
-			const { name, email } = data.user;
-			loginUserSuccess(name, email, dataString);
-			navigate('/courses');
-		} else {
-			alert('Authorisation error');
-			console.error('Error:', data);
-		}
-	};
 
 	const handleInputChange = (newValue) => {
 		setUser({ ...user, ...newValue });
@@ -57,7 +24,19 @@ const Login = () => {
 
 	const handlLogin = (e) => {
 		e.preventDefault();
-		loginUser(user);
+		postData(user, 'http://localhost:4000/login')
+			.then((data) => {
+				console.log('Success:', data);
+				const dataString = JSON.stringify(data.result);
+				localStorage.setItem('token', dataString);
+				const { name, email } = data.user;
+				dispatch(loginUserSuccess(name, email, dataString));
+				navigate('/courses');
+			})
+			.catch((error) => {
+				alert('Authorisation error');
+				throw new Error(error);
+			});
 	};
 
 	return (

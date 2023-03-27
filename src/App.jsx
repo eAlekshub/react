@@ -2,10 +2,12 @@ import React, { useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { LOGIN_SUCCESS } from '../src/store/user/actionTypes';
-import { getData } from './servisces';
-
 import './App.css';
+
+import { loginUserSuccess } from './store/user/actionCreators';
+import { getAllCourses } from './store/courses/actionCreators';
+import { getAllAuthors } from './store/authors/actionCreators';
+import { getData } from './servisces';
 
 import Header from './components/Header/Header';
 import Registration from './components/Registration/Registration';
@@ -18,12 +20,6 @@ function App() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const loginUserSuccess = (name, email, token) =>
-		dispatch({
-			type: LOGIN_SUCCESS,
-			payload: { name, email, token },
-		});
-
 	useEffect(() => {
 		const tokenString = localStorage.getItem('token');
 		if (tokenString) {
@@ -31,7 +27,7 @@ function App() {
 			getData('http://localhost:4000/users/me', token)
 				.then((data) => {
 					const { name, email } = data.result;
-					loginUserSuccess(name, email, token);
+					dispatch(loginUserSuccess(name, email, token));
 					navigate('/courses');
 				})
 				.catch((error) => {
@@ -40,6 +36,25 @@ function App() {
 		} else {
 			navigate('/login');
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		getData('http://localhost:4000/courses/all')
+			.then((data) => {
+				dispatch(getAllCourses(data.result));
+			})
+			.catch((error) => {
+				throw new Error(error);
+			});
+
+		getData('http://localhost:4000/authors/all')
+			.then((data) => {
+				dispatch(getAllAuthors(data.result));
+			})
+			.catch((error) => {
+				throw new Error(error);
+			});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

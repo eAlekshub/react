@@ -1,25 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 
 import './createCourse.css';
 
-import {
-	mockedCoursesList,
-	mockedAuthorsList,
-	BUTTON,
-	PLACEHOLDER,
-	LABEL,
-	EMPTY_FIELDS,
-} from '../../constants';
+import { BUTTON, PLACEHOLDER, LABEL, EMPTY_FIELDS } from '../../constants';
+
+import { addAuthor } from '../../store/authors/actionCreators';
+import { addCourse } from '../../store/courses/actionCreators';
+import { getAllAuthors } from '../../store/selectors';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 
 const CreateCourse = () => {
-	const navigate = useNavigate();
-
 	const {
 		BUTTON_CREATE_COURSE,
 		BUTTON_CREATE_AUTHOR,
@@ -41,8 +36,12 @@ const CreateCourse = () => {
 	const [description, setDescription] = useState('');
 	const [authorName, setAuthorName] = useState('');
 	const [duration, setDuration] = useState('');
+	const [authorsList, setAuthorsList] = useState([]);
 	const [courseAuthorsList, setCourseAuthorsList] = useState([]);
-	const [authorsList, setAuthorsList] = useState(mockedAuthorsList);
+
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const allAuthors = useSelector(getAllAuthors);
 
 	const handleTitleChange = (e) => {
 		setTitle(e.target.value);
@@ -77,7 +76,7 @@ const CreateCourse = () => {
 				id: uuid(),
 				name: authorName,
 			};
-			mockedAuthorsList.push(newAuthor);
+			dispatch(addAuthor(newAuthor));
 			setAuthorName('');
 		}
 	};
@@ -108,12 +107,16 @@ const CreateCourse = () => {
 				duration: numDuration,
 				authors: idCourseAuthorsList,
 			};
-			mockedCoursesList.push(newCourse);
+			dispatch(addCourse(newCourse));
 			navigate('/courses');
 		} else {
 			alert(EMPTY_FIELDS);
 		}
 	};
+
+	useEffect(() => {
+		setAuthorsList(allAuthors);
+	}, [allAuthors]);
 
 	return (
 		<form className='formCreateCourse' onSubmit={handleCreateCourse}>

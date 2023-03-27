@@ -1,19 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import './courses.css';
 
-import {
-	mockedCoursesList,
-	mockedAuthorsList,
-	BUTTON,
-	PLACEHOLDER,
-} from '../../constants';
-import { GET_COURSES } from '../../store/courses/actionTypes';
-import { GET_AUTHORS } from '../../store/authors/actionTypes';
-
-import { getData } from '../../servisces';
+import { getAllCourses, getAllAuthors } from '../../store/selectors';
+import { BUTTON, PLACEHOLDER } from '../../constants';
 
 import SearchBar from './components/SearchBar/SearchBar';
 import Button from '../../common/Button/Button';
@@ -26,29 +18,8 @@ const Courses = () => {
 	const [searchValue, setSearchValue] = useState('');
 	const [filteredCourses, setFilteredCourses] = useState([]);
 
-	const allCourses = useSelector((state) => state.courses);
-	const allAuthors = useSelector((state) => state.authors);
-	const dispatch = useDispatch();
-
-	const getAllCourses = useCallback(
-		(course) => {
-			dispatch({
-				type: GET_COURSES,
-				payload: course,
-			});
-		},
-		[dispatch]
-	);
-
-	const getAllAuthors = useCallback(
-		(authors) => {
-			dispatch({
-				type: GET_AUTHORS,
-				payload: authors,
-			});
-		},
-		[dispatch]
-	);
+	const allCourses = useSelector(getAllCourses);
+	const allAuthors = useSelector(getAllAuthors);
 
 	const handleSearch = () => {
 		const searchValueLowerCase = searchValue.toLowerCase();
@@ -65,30 +36,14 @@ const Courses = () => {
 	};
 
 	useEffect(() => {
-		getData('http://localhost:4000/courses/all')
-			.then((data) => {
-				getAllCourses(data.result);
-			})
-			.catch((error) => {
-				throw new Error(error);
-			});
-
-		getData('http://localhost:4000/authors/all')
-			.then((data) => {
-				getAllAuthors(data.result);
-			})
-			.catch((error) => {
-				throw new Error(error);
-			});
-
 		if (searchValue === '') {
 			setFilteredCourses(allCourses);
 		}
-	}, [allCourses, getAllAuthors, getAllCourses, searchValue]);
+	}, [allCourses, searchValue]);
 
 	return (
 		<section className='coursesList'>
-			<div className='controlPanel'>
+			<div className='courseControls'>
 				<>
 					<SearchBar
 						value={searchValue}
