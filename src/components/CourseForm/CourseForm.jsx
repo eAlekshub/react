@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { v4 as uuid } from 'uuid';
 
-import './createCourse.css';
+import './сourseForm.css';
 
 import { BUTTON, PLACEHOLDER, LABEL, EMPTY_FIELDS } from '../../constants';
 
 import { addAuthor } from '../../store/authors/actionCreators';
 import { addCourse } from '../../store/courses/actionCreators';
-import { getAllAuthors } from '../../store/selectors';
+import { getAllAuthors, getAllCourses } from '../../store/selectors';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
@@ -38,6 +38,11 @@ const CreateCourse = () => {
 	const [duration, setDuration] = useState('');
 	const [authorsList, setAuthorsList] = useState([]);
 	const [courseAuthorsList, setCourseAuthorsList] = useState([]);
+
+	const { courseId } = useParams();
+	console.log('courseId:', courseId);
+	const allCourses = useSelector(getAllCourses);
+	const courseUpdate = allCourses.find((course) => course.id === courseId);
 
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
@@ -116,7 +121,19 @@ const CreateCourse = () => {
 
 	useEffect(() => {
 		setAuthorsList(allAuthors);
-	}, [allAuthors]);
+
+		if (courseUpdate) {
+			setTitle(courseUpdate.title);
+			setDescription(courseUpdate.description);
+			setDuration(courseUpdate.duration.toString());
+			setCourseAuthorsList(
+				allAuthors.filter((author) => courseUpdate.authors.includes(author.id))
+			);
+			setAuthorsList(
+				allAuthors.filter((author) => !courseUpdate.authors.includes(author.id))
+			);
+		}
+	}, [allAuthors, courseUpdate]);
 
 	return (
 		<form className='formCreateCourse' onSubmit={handleCreateCourse}>

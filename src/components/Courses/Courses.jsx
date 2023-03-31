@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import './courses.css';
 
-import { getAllCourses, getAllAuthors } from '../../store/selectors';
+import { getAllCourses, getAllAuthors, getUser } from '../../store/selectors';
 import { BUTTON, PLACEHOLDER } from '../../constants';
 
 import SearchBar from './components/SearchBar/SearchBar';
@@ -17,6 +17,8 @@ const Courses = () => {
 
 	const [searchValue, setSearchValue] = useState('');
 	const [filteredCourses, setFilteredCourses] = useState([]);
+
+	const user = useSelector(getUser);
 
 	const allCourses = useSelector(getAllCourses);
 	const allAuthors = useSelector(getAllAuthors);
@@ -51,9 +53,11 @@ const Courses = () => {
 						onSearch={handleSearch}
 						placeholder={PLACEHOLDER_SEARCH}
 					/>
-					<Link to='/courses/add'>
-						<Button buttonText={BUTTON_NEW_COURSE} />
-					</Link>
+					{user.role === 'admin' && (
+						<Link to='/courses/add'>
+							<Button buttonText={BUTTON_NEW_COURSE} />
+						</Link>
+					)}
 				</>
 			</div>
 

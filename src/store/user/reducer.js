@@ -5,16 +5,24 @@ const userInitialState = {
 	name: '',
 	email: '',
 	token: '',
+	role: '',
 };
 
 const userReduser = (state = userInitialState, action) => {
 	switch (action.type) {
 		case LOGIN_SUCCESS:
-			const { name, email, token } = action.payload;
-			return { ...state, isAuth: true, name, email, token };
+			const { name, email, token, role } = action.payload;
+			return { ...state, isAuth: true, name, email, token, role };
 
 		case LOGOUT:
-			return { ...state, isAuth: false, name: '', email: '', token: '' };
+			return {
+				...state,
+				isAuth: false,
+				name: '',
+				email: '',
+				token: '',
+				role: '',
+			};
 
 		default:
 			return state;

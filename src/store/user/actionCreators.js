@@ -1,13 +1,12 @@
 import { LOGIN_SUCCESS, LOGOUT } from './actionTypes';
 
-const loginUserSuccess = (name, email, token) => ({
+const loginUserSuccess = (name, email, token, role) => ({
 	type: LOGIN_SUCCESS,
-	payload: { name, email, token },
+	payload: { name, email, token, role },
 });
 
-const logout = (user) => ({
+const logout = () => ({
 	type: LOGOUT,
-	payload: user,
 });
 
 export { loginUserSuccess, logout };

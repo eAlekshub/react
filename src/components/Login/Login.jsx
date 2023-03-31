@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
-import { loginUserSuccess } from '../../store/user/actionCreators';
 
 import './login.css';
 
@@ -10,7 +9,7 @@ import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 
 import { BUTTON, loginForm } from '../../constants';
-import { postData } from '../../servisces';
+import { postUserThunk } from '../../store/user/thunk';
 
 const Login = () => {
 	const { BUTTON_LOGIN } = BUTTON;
@@ -22,21 +21,13 @@ const Login = () => {
 		setUser({ ...user, ...newValue });
 	};
 
+	const nav = () => {
+		navigate('/courses');
+	};
+
 	const handlLogin = (e) => {
 		e.preventDefault();
-		postData(user, 'http://localhost:4000/login')
-			.then((data) => {
-				console.log('Success:', data);
-				const dataString = JSON.stringify(data.result);
-				localStorage.setItem('token', dataString);
-				const { name, email } = data.user;
-				dispatch(loginUserSuccess(name, email, dataString));
-				navigate('/courses');
-			})
-			.catch((error) => {
-				alert('Authorisation error');
-				throw new Error(error);
-			});
+		dispatch(postUserThunk(user, 'http://localhost:4000/login', nav));
 	};
 
 	return (

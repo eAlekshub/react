@@ -1,23 +1,34 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import { useDispatch, useSelector } from 'react-redux';
+import { getUserThunk, delUserThunk } from '../../store/user/thunk';
 
 import './header.css';
 
-import { logout } from '../../store/user/actionCreators';
 import { getUser } from '../../store/selectors';
 
 import Logo from './components/Logo/Logo';
 import Button from '../../common/Button/Button';
 
 const Header = () => {
+	const navigate = useNavigate();
+
 	const dispatch = useDispatch();
 	const user = useSelector(getUser);
 
 	const handleLogout = () => {
 		localStorage.removeItem('token');
-		dispatch(logout(user));
+		dispatch(delUserThunk());
 	};
+
+	useEffect(() => {
+		const tokenString = localStorage.getItem('token');
+		if (tokenString) {
+			const token = JSON.parse(tokenString);
+			dispatch(getUserThunk('http://localhost:4000/users/me', token));
+		}
+	}, [dispatch, navigate]);
 
 	return (
 		<header>

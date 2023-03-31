@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './courseCard.css';
 import pencil from '../../../../../src/img/pencil.svg';
 import trash from '../../../../../src/img/trash.svg';
 
-import { delCourse } from '../../../../store/courses/actionCreators';
+import { delCourseThunk } from '../../../../store/courses/thunk';
+import { getUser } from '../../../../store/selectors';
 import { BUTTON } from '../../../../constants';
 
 import Button from '../../../../common/Button/Button';
@@ -16,9 +17,10 @@ const CourseCard = (course) => {
 	const { BUTTON_SHOW_COURSE } = BUTTON;
 
 	const dispatch = useDispatch();
+	const user = useSelector(getUser);
 
 	const handleDeleteClick = () => {
-		dispatch(delCourse(id));
+		dispatch(delCourseThunk(id));
 	};
 
 	return (
@@ -41,20 +43,26 @@ const CourseCard = (course) => {
 					<Link to={`/courses/${id}`}>
 						<Button buttonText={BUTTON_SHOW_COURSE} />
 					</Link>
-					<Button
-						className='controlBtn'
-						type='button'
-						srcImage={pencil}
-						alt='button update'
-						onClick={() => console.log('Button clicked')}
-					/>
-					<Button
-						className='controlBtn'
-						type='button'
-						srcImage={trash}
-						alt='button delete'
-						onClick={handleDeleteClick}
-					/>
+					{user.role === 'admin' && (
+						<>
+							<Link to={`/courses/update/${id}`}>
+								<Button
+									className='controlBtn'
+									type='button'
+									srcImage={pencil}
+									alt='button update'
+									// onClick={() => console.log('Button clicked')}
+								/>
+							</Link>
+							<Button
+								className='controlBtn'
+								type='button'
+								srcImage={trash}
+								alt='button delete'
+								onClick={handleDeleteClick}
+							/>
+						</>
+					)}
 				</div>
 			</div>
 		</div>

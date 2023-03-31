@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 
 import './App.css';
 
-import { loginUserSuccess } from './store/user/actionCreators';
 import { getAllCourses } from './store/courses/actionCreators';
 import { getAllAuthors } from './store/authors/actionCreators';
 import { getData } from './servisces';
@@ -14,7 +13,8 @@ import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
 import Courses from './components/Courses/Courses';
 import CourseInfo from './components/CourseInfo/CourseInfo';
-import CreateCourse from './components/CreateCourse/CreateCourse';
+import CourseForm from './components/CourseForm/CourseForm';
+import PrivateRoute from './components/PrivateRouter/PrivateRouter';
 
 function App() {
 	const navigate = useNavigate();
@@ -23,16 +23,7 @@ function App() {
 	useEffect(() => {
 		const tokenString = localStorage.getItem('token');
 		if (tokenString) {
-			const token = JSON.parse(tokenString);
-			getData('http://localhost:4000/users/me', token)
-				.then((data) => {
-					const { name, email } = data.result;
-					dispatch(loginUserSuccess(name, email, token));
-					navigate('/courses');
-				})
-				.catch((error) => {
-					throw new Error(error);
-				});
+			navigate('/courses');
 		} else {
 			navigate('/login');
 		}
@@ -66,8 +57,11 @@ function App() {
 				<Route path='/registration' element={<Registration />} />
 				<Route path='/login' element={<Login />} />
 				<Route path='/courses' element={<Courses />} />
-				<Route path='/courses/add' element={<CreateCourse />} />
-				<Route path='/courses/:courseId' element={<CourseInfo />} />
+				<Route element={<PrivateRoute userRole='admin' />}>
+					<Route path='/courses/add' element={<CourseForm />} />
+					<Route path='/courses/update/:courseId' element={<CourseForm />} />
+					<Route path='/courses/:courseId' element={<CourseInfo />} />
+				</Route>
 			</Routes>
 		</div>
 	);
