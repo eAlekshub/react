@@ -57,10 +57,10 @@ function App() {
 				<Route path='/registration' element={<Registration />} />
 				<Route path='/login' element={<Login />} />
 				<Route path='/courses' element={<Courses />} />
+				<Route path='/courses/:courseId' element={<CourseInfo />} />
 				<Route element={<PrivateRoute userRole='admin' />}>
 					<Route path='/courses/add' element={<CourseForm />} />
 					<Route path='/courses/update/:courseId' element={<CourseForm />} />
-					<Route path='/courses/:courseId' element={<CourseInfo />} />
 				</Route>
 			</Routes>
 		</div>

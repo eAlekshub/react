@@ -1,9 +1,9 @@
 import { loginUserSuccess, logout } from './actionCreators';
 
-const getUserThunk = (url, token) => {
+const getUserThunk = (token) => {
 	return async (dispatch) => {
 		try {
-			const response = await fetch(url, {
+			const response = await fetch('http://localhost:4000/users/me', {
 				method: 'GET',
 				headers: {
 					Authorization: token,
@@ -24,10 +24,10 @@ const getUserThunk = (url, token) => {
 	};
 };
 
-const postUserThunk = (user, url, onSuccess) => {
+const loginUserThunk = (user, onSuccess) => {
 	return async (dispatch) => {
 		try {
-			const response = await fetch(url, {
+			const response = await fetch('http://localhost:4000/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -74,4 +74,4 @@ const delUserThunk = () => {
 	};
 };
 
-export { getUserThunk, postUserThunk, delUserThunk };
+export { getUserThunk, loginUserThunk, delUserThunk };

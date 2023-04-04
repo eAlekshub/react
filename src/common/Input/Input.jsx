@@ -1,17 +1,15 @@
 import React from 'react';
 import './input.css';
 
-const Input = (props) => {
-	const {
-		labelText,
-		placeholderText,
-		onChangeInput,
-		inputType,
-		inputId,
-		inputValue,
-		htmlFor,
-	} = props;
-
+const Input = ({
+	labelText,
+	placeholderText,
+	onChangeInput,
+	inputType,
+	inputId,
+	inputValue,
+	htmlFor,
+}) => {
 	return (
 		<div className='searchInput'>
 			<label htmlFor={htmlFor}>{labelText}</label>

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { v4 as uuid } from 'uuid';
 
 import './сourseForm.css';
 
 import { BUTTON, PLACEHOLDER, LABEL, EMPTY_FIELDS } from '../../constants';
 
-import { addAuthor } from '../../store/authors/actionCreators';
-import { addCourse } from '../../store/courses/actionCreators';
+import { addAuthorThunk } from '../../store/authors/thunk';
+import { updateCourseThunk, addCourseThunk } from '../../store/courses/thunk';
 import { getAllAuthors, getAllCourses } from '../../store/selectors';
 
 import Input from '../../common/Input/Input';
@@ -20,6 +19,7 @@ const CreateCourse = () => {
 		BUTTON_CREATE_AUTHOR,
 		BUTTON_ADD_AUTHOR,
 		BUTTON_DEL_AUTHOR,
+		BUTTON_UPDATE_COURSE,
 	} = BUTTON;
 
 	const {
@@ -39,13 +39,11 @@ const CreateCourse = () => {
 	const [authorsList, setAuthorsList] = useState([]);
 	const [courseAuthorsList, setCourseAuthorsList] = useState([]);
 
-	const { courseId } = useParams();
-	console.log('courseId:', courseId);
-	const allCourses = useSelector(getAllCourses);
-	const courseUpdate = allCourses.find((course) => course.id === courseId);
-
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { courseId } = useParams();
+
+	const allCourses = useSelector(getAllCourses);
 	const allAuthors = useSelector(getAllAuthors);
 
 	const handleTitleChange = (e) => {
@@ -78,13 +76,16 @@ const CreateCourse = () => {
 	const handlCreateAuthor = () => {
 		if (authorName.length >= 2) {
 			const newAuthor = {
-				id: uuid(),
 				name: authorName,
 			};
-			dispatch(addAuthor(newAuthor));
+			dispatch(addAuthorThunk(newAuthor));
 			setAuthorName('');
 		}
 	};
+
+	const nav = () => navigate('/courses');
+
+	const updatedСourse = allCourses.find(({ id }) => id === courseId);
 
 	const handleCreateCourse = (e) => {
 		e.preventDefault();
@@ -104,16 +105,28 @@ const CreateCourse = () => {
 			duration >= 1 &&
 			courseAuthorsList.length !== 0
 		) {
-			const newCourse = {
-				id: uuid(),
-				title: title,
-				description: description,
-				creationDate: formattedDate,
-				duration: numDuration,
-				authors: idCourseAuthorsList,
-			};
-			dispatch(addCourse(newCourse));
-			navigate('/courses');
+			const courseIndex = allCourses.findIndex(
+				(course) => course.id === courseId
+			);
+			if (courseIndex !== -1) {
+				const updatedCourse = {
+					...allCourses[courseIndex],
+					title: title,
+					description: description,
+					duration: numDuration,
+					authors: idCourseAuthorsList,
+				};
+				dispatch(updateCourseThunk(updatedCourse, nav));
+			} else {
+				const newCourse = {
+					title: title,
+					description: description,
+					creationDate: formattedDate,
+					duration: numDuration,
+					authors: idCourseAuthorsList,
+				};
+				dispatch(addCourseThunk(newCourse, nav));
+			}
 		} else {
 			alert(EMPTY_FIELDS);
 		}
@@ -122,18 +135,20 @@ const CreateCourse = () => {
 	useEffect(() => {
 		setAuthorsList(allAuthors);
 
-		if (courseUpdate) {
-			setTitle(courseUpdate.title);
-			setDescription(courseUpdate.description);
-			setDuration(courseUpdate.duration.toString());
+		if (updatedСourse) {
+			setTitle(updatedСourse.title);
+			setDescription(updatedСourse.description);
+			setDuration(updatedСourse.duration.toString());
 			setCourseAuthorsList(
-				allAuthors.filter((author) => courseUpdate.authors.includes(author.id))
+				allAuthors.filter((author) => updatedСourse.authors.includes(author.id))
 			);
 			setAuthorsList(
-				allAuthors.filter((author) => !courseUpdate.authors.includes(author.id))
+				allAuthors.filter(
+					(author) => !updatedСourse.authors.includes(author.id)
+				)
 			);
 		}
-	}, [allAuthors, courseUpdate]);
+	}, [allAuthors, updatedСourse]);
 
 	return (
 		<form className='formCreateCourse' onSubmit={handleCreateCourse}>
@@ -147,7 +162,12 @@ const CreateCourse = () => {
 					inputValue={title}
 					onChangeInput={handleTitleChange}
 				/>
-				<Button type='submit' buttonText={BUTTON_CREATE_COURSE} />
+				<Button
+					type='submit'
+					buttonText={
+						updatedСourse ? BUTTON_UPDATE_COURSE : BUTTON_CREATE_COURSE
+					}
+				/>
 			</div>
 
 			<div className='formTextarea'>

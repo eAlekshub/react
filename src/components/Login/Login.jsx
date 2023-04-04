@@ -9,7 +9,7 @@ import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 
 import { BUTTON, loginForm } from '../../constants';
-import { postUserThunk } from '../../store/user/thunk';
+import { loginUserThunk } from '../../store/user/thunk';
 
 const Login = () => {
 	const { BUTTON_LOGIN } = BUTTON;
@@ -27,7 +27,7 @@ const Login = () => {
 
 	const handlLogin = (e) => {
 		e.preventDefault();
-		dispatch(postUserThunk(user, 'http://localhost:4000/login', nav));
+		dispatch(loginUserThunk(user, nav));
 	};
 
 	return (

@@ -12,8 +12,14 @@ import { BUTTON } from '../../../../constants';
 
 import Button from '../../../../common/Button/Button';
 
-const CourseCard = (course) => {
-	const { id, title, description, duration, creationDate, authors } = course;
+const CourseCard = ({
+	id,
+	title,
+	description,
+	duration,
+	creationDate,
+	authors,
+}) => {
 	const { BUTTON_SHOW_COURSE } = BUTTON;
 
 	const dispatch = useDispatch();

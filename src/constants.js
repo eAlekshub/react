@@ -62,6 +62,7 @@ const BUTTON = {
 	BUTTON_SEARCH: 'Search',
 	BUTTON_NEW_COURSE: 'Add new course',
 	BUTTON_CREATE_COURSE: 'Create course',
+	BUTTON_UPDATE_COURSE: 'Update course',
 	BUTTON_SHOW_COURSE: 'Show course',
 	BUTTON_CREATE_AUTHOR: 'Create author',
 	BUTTON_ADD_AUTHOR: 'Add author',

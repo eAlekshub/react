@@ -24,11 +24,11 @@ const Header = () => {
 
 	useEffect(() => {
 		const tokenString = localStorage.getItem('token');
-		if (tokenString) {
+		if (tokenString && !user.role) {
 			const token = JSON.parse(tokenString);
-			dispatch(getUserThunk('http://localhost:4000/users/me', token));
+			dispatch(getUserThunk(token));
 		}
-	}, [dispatch, navigate]);
+	}, [dispatch, navigate, user]);
 
 	return (
 		<header>
