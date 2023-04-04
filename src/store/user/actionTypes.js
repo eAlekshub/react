@@ -1,0 +1,4 @@
+const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+const LOGOUT = 'LOGOUT';
+
+export { LOGIN_SUCCESS, LOGOUT };

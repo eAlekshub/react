@@ -1,0 +1,58 @@
+.courseCard {
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ box-shadow: 5px 5px 20px rgb(0 0 0 / 15%);
+ margin-top: 25px;
+ border: 2px solid rgba(0, 0, 0, 0.1);
+ padding: 20px 30px;
+}
+
+.courseTitle{
+width: 71%;
+}
+
+.courseTitle h2{
+ margin-bottom: 10px;
+}
+
+.courseDescription{
+ display: flex;
+ flex-direction: column;
+width: 25%;
+ 
+}
+
+.courseDescription p {
+ margin-bottom: 10px;
+}
+
+
+.courseCard button {
+ align-self: center;
+}
+
+.controlPanel{
+ display: flex;
+ justify-content: center;
+ align-items: center;
+gap: 5px
+}
+
+.controlBtn {
+ padding: 0;
+ width: 30px;
+ height: 29.2px;
+ text-align: center;
+}
+
+.courseCard button img {
+ width: 15px;
+ vertical-align: middle;
+}
+
+.author{
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+}
